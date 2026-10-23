@@ -1,0 +1,333 @@
+/* ==========================================================================
+   Calendario de proyección — tema oscuro inspirado en la paleta de VS Code
+   --------------------------------------------------------------------------
+   Organización:
+   1. Tokens de diseño (colores, tipografía, espaciado, radios y sombras)
+   2. Base y layout
+   3. Componentes (encabezado, semanas, tarjetas, estado y pie)
+   4. Responsive y accesibilidad
+   ========================================================================== */
+
+/* 1. Tokens de diseño ------------------------------------------------------ */
+:root {
+  /* Superficies */
+  --color-bg-page: #181818;
+  --color-bg-surface: #1e1e1e;
+  --color-bg-panel: #252526;
+  --color-bg-hover: #232323;
+
+  /* Bordes */
+  --color-border-subtle: #2d2d2d;
+
+  /* Texto */
+  --color-text: #d4d4d4;
+  --color-text-dim: #9d9d9d;
+  --color-text-muted: #7d8590;
+  --color-text-strong: #ffffff;
+
+  /* Acentos y colores de sintaxis de VS Code */
+  --color-accent: #007acc;
+  --color-accent-glow: rgba(0, 122, 204, 0.1);
+  --color-syntax-blue: #569cd6;
+  --color-syntax-purple: #c586c0;
+  --color-syntax-orange: #ce9178;
+  --color-syntax-yellow: #dcdcaa;
+  --color-syntax-green: #6a9955;
+  --color-selection: #264f78;
+
+  /* Scrollbar */
+  --color-scrollbar: #424242;
+  --color-scrollbar-hover: #4f4f4f;
+
+  /* Tipografía: fuentes del sistema, sin descargas externas */
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas,
+    "Liberation Mono", Menlo, monospace;
+
+  /* Escala tipográfica fluida: crece con el ancho de pantalla y mantiene un
+     mínimo legible en celulares. */
+  --text-base: 0.95rem;
+  --text-day-title: clamp(0.82rem, 2.2vw, 0.92rem);
+  --text-day-date: clamp(1.1rem, 3vw, 1.3rem);
+  --text-moment: clamp(0.9rem, 2.4vw, 1rem);
+  --text-person: clamp(1.05rem, 2.5vw, 1.2rem);
+  --text-week-title: clamp(1.15rem, 3vw, 1.35rem);
+  --text-page-title: clamp(1.95rem, 5vw, 2.8rem);
+
+  /* Espaciado (base de 4px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+
+  /* Radios */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* Layout del cronograma */
+  --content-width: 960px;
+
+  /* Movimiento */
+  --transition-fast: 150ms ease;
+}
+
+/* 2. Base y layout --------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+  background: var(--color-bg-page);
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+body {
+  margin: 0;
+  /* 100vh y no 100%: con pocas semanas la página queda más corta que la
+     pantalla y el fondo se cortaba a mitad de camino. */
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: calc(var(--space-7) + env(safe-area-inset-top, 0px)) var(--space-5)
+    calc(var(--space-7) + env(safe-area-inset-bottom, 0px));
+  font-family: var(--font-ui);
+  color: var(--color-text);
+  background:
+    radial-gradient(90% 55% at 50% 0%, var(--color-accent-glow), transparent 70%),
+    var(--color-bg-page);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-selection);
+  color: var(--color-text-strong);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-page);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-hover);
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
+}
+
+/* 3. Componentes ----------------------------------------------------------- */
+
+/* Encabezado de la página -------------------------------------------------- */
+.page-header {
+  margin-bottom: var(--space-6);
+}
+
+.page-header__title {
+  margin: 0;
+  color: var(--color-text-strong);
+  font-family: var(--font-ui);
+  font-size: var(--text-page-title);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* Semanas ------------------------------------------------------------------ */
+.week {
+  padding: 18px var(--space-5) var(--space-5);
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.week + .week {
+  margin-top: var(--space-6);
+}
+
+.week__title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-strong);
+  font-family: var(--font-mono);
+  font-size: var(--text-week-title);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.week__title::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  background: var(--color-accent);
+  border-radius: 2px;
+  box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.16);
+}
+
+/* Días del finde ----------------------------------------------------------- */
+.week__days {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.day {
+  padding-left: 14px;
+  border-left: 2px solid var(--color-border-subtle);
+}
+
+.day--sabado {
+  border-left-color: rgba(197, 134, 192, 0.55);
+}
+
+.day--domingo {
+  border-left-color: rgba(86, 156, 214, 0.55);
+}
+
+.day__title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-day-title);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.day__name {
+  color: var(--color-text-dim);
+}
+
+.day--sabado .day__name {
+  color: var(--color-syntax-purple);
+}
+
+.day--domingo .day__name {
+  color: var(--color-syntax-blue);
+}
+
+.day__date {
+  color: var(--color-text);
+  font-size: var(--text-day-date);
+  letter-spacing: 0;
+}
+
+/* Turnos del día ----------------------------------------------------------- */
+.day__shifts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.shift {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.shift:hover {
+  background: var(--color-bg-hover);
+}
+
+.shift__moment {
+  flex: 0 0 68px;
+  color: var(--color-syntax-yellow);
+  font-family: var(--font-mono);
+  font-size: var(--text-moment);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.shift__person {
+  overflow-wrap: anywhere;
+  color: var(--color-text);
+  font-size: var(--text-person);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.shift__person--empty {
+  color: var(--color-text-muted);
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Mensajes de estado ------------------------------------------------------- */
+.notice {
+  margin: 2px var(--space-1);
+  color: var(--color-text-dim);
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+.notice::before {
+  content: "// ";
+  color: var(--color-syntax-green);
+}
+
+.notice code {
+  padding: 1px 5px;
+  color: var(--color-syntax-orange);
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+/* 4. Responsive y accesibilidad -------------------------------------------- */
+@media (max-width: 560px) {
+  body {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+
+  .week {
+    padding: var(--space-4) 14px;
+  }
+
+  .day {
+    padding-left: var(--space-3);
+  }
+
+  .shift {
+    gap: var(--space-2);
+    padding: 10px 8px;
+  }
+
+  .shift__moment {
+    flex-basis: 60px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shift {
+    transition: none;
+  }
+}

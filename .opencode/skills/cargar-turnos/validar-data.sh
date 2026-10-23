@@ -14,7 +14,8 @@
 # Que es un finde: cada mes tiene 4 o 5 findes y el cronograma tiene que
 # tenerlos todos. Cada finde se carga con la fecha del DOMINGO que arranca
 # esa semana (el finde del 31 de octubre va con "fecha": "2026-11-01").
-# Un finde sin turnos se carga igual, con "turnos": [].
+# Un finde sin turnos se carga igual, con "turnos": {}. Cada finde tiene
+# tres turnos fijos: sabadoTarde, domingoManana y domingoTarde.
 #
 # Solo necesita bash, awk y las utilidades de texto basicas.
 
@@ -340,8 +341,8 @@ function fechaLegible(iso) {
 
 BEGIN {
   PERMITIDAS_SEMANA[1] = "fecha";  PERMITIDAS_SEMANA[2] = "turnos"; PERMITIDAS_SEMANA[3] = "titulo"
-  PERMITIDAS_TURNO[1]  = "turno";  PERMITIDAS_TURNO[2]  = "grandes"; PERMITIDAS_TURNO[3]  = "peques"
-  PERMITIDAS_GRUPO[1]  = "seño";   PERMITIDAS_GRUPO[2]  = "ayudantes"
+  PERMITIDAS_TURNO[1]  = "sabadoTarde"; PERMITIDAS_TURNO[2] = "domingoManana"; PERMITIDAS_TURNO[3] = "domingoTarde"
+  CLAVES_TURNO[1] = "sabadoTarde"; CLAVES_TURNO[2] = "domingoManana"; CLAVES_TURNO[3] = "domingoTarde"
   MES[1]="enero"; MES[2]="febrero"; MES[3]="marzo"; MES[4]="abril"; MES[5]="mayo"; MES[6]="junio"
   MES[7]="julio"; MES[8]="agosto"; MES[9]="septiembre"; MES[10]="octubre"; MES[11]="noviembre"; MES[12]="diciembre"
   for (k in MES) mesLetra[k] = MES[k]
@@ -371,7 +372,7 @@ function revisar(   i, j, r, base, semana, camino, k) {
   # --- clave semanas
   if (!("$.semanas" in clase)) {
     fallar("Falta la lista \"semanas\", que es donde van todos los turnos.",
-           "El archivo tiene que verse así: { \"semanas\": [ { \"fecha\": \"2026-10-04\", \"turnos\": [ ... ] } ] }")
+           "El archivo tiene que verse así: { \"semanas\": [ { \"fecha\": \"2026-10-04\", \"turnos\": { \"sabadoTarde\": \"\", \"domingoManana\": \"\", \"domingoTarde\": \"\" } } ] }")
     return
   }
   if (clase["$.semanas"] != "a") {
@@ -428,10 +429,10 @@ function revisarHuecos(   n, i, j, k, arr, t, p1, p2, a1, m1, d1, a2, m2, d2, di
     }
     if (nf == 1) {
       fallar("Entre la semana del " arr[i] " y la del " arr[i + 1] " falta la semana del " faltan ".",
-             "Cargá la semana que falta en data.json. Si ese finde no tiene turnos, dejala con \"turnos\": [].")
+             "Cargá la semana que falta en data.json. Si ese finde no tiene turnos, dejala con \"turnos\": {}.")
     } else {
       fallar("Entre la semana del " arr[i] " y la del " arr[i + 1] " faltan las semanas del " faltan ".",
-             "Cargá las semanas que faltan en data.json. Si esos findes no tienen turnos, dejalas con \"turnos\": [].")
+             "Cargá las semanas que faltan en data.json. Si esos findes no tienen turnos, dejalas con \"turnos\": {}.")
     }
   }
 }
@@ -443,7 +444,7 @@ function revisarSemana(base, semana,   p, fecha, a, m, d, etiqueta, f, fechaOk) 
 
   if (clase[base] != "o") {
     fallar(mayus(etiqueta) " no tiene la forma correcta.",
-           "Cada semana es un bloque entre llaves que tiene una \"fecha\" y una lista \"turnos\".")
+           "Cada semana es un bloque entre llaves que tiene una \"fecha\" y un objeto \"turnos\".")
     return
   }
 
@@ -505,89 +506,40 @@ function revisarSemana(base, semana,   p, fecha, a, m, d, etiqueta, f, fechaOk) 
 
   p = base ".turnos"
   if (!(p in clase)) {
-    fallar("A " etiqueta " le falta la lista de turnos.",
-           "Agregá \"turnos\": [ ... ] con un bloque por cada franja horaria.")
-  } else if (clase[p] != "a") {
-    fallar("La lista \"turnos\" de " etiqueta " no es una lista.",
-           "Tiene que ir entre corchetes: [ ]. Mirá cómo está escrita la primera semana del archivo y seguí ese formato.")
+    fallar("A " etiqueta " le falta el bloque de turnos.",
+           "Agregá \"turnos\": { \"sabadoTarde\": \"...\", \"domingoManana\": \"...\", \"domingoTarde\": \"...\" }.")
+  } else if (clase[p] != "o") {
+    fallar("El bloque \"turnos\" de " etiqueta " no es un objeto.",
+           "Tiene que ir entre llaves: { ... }. El formato viejo con lista entre corchetes ya no se usa.")
   } else {
     revisarTurnos(p, etiqueta)
   }
 }
 
-function revisarTurnos(base, etiquetaSemana,   j, baseT, n, etiqueta, p) {
+function revisarTurnos(base, etiquetaSemana,   j, p, clave, llenos, n) {
+  llenos = 0
   n = 0
-  for (j = 0; j < 200; j++) {
-    baseT = base "[" j "]"
-    if (!(baseT in clase)) break
+  for (j = 1; j <= 3; j++) {
+    clave = CLAVES_TURNO[j]
+    p = base "." clave
+    if (!(p in clase)) continue
     n++
-    if (clase[baseT] == "o") {
-      etiqueta = "el turno " (j + 1) " de " etiquetaSemana
-      p = baseT ".turno"
-      if (!(p in clase)) {
-        fallar("No dice a qué franja horaria corresponde " etiqueta ".",
-               "Agregá \"turno\": \"Mañana\" o \"turno\": \"Tarde\" (con mayúscula y con la tilde en Mañana).")
-      } else if (clase[p] != "v:string") {
-        fallar("El nombre de la franja horaria de " etiqueta " está mal.",
-               "Tiene que ser un texto: \"turno\": \"Mañana\".")
-      } else if (valor[p] ~ /^[[:space:]]*$/) {
-        fallar("El nombre de la franja horaria de " etiqueta " está vacío.",
-               "Poné \"Mañana\" o \"Tarde\".")
-      } else {
-        etiqueta = "el turno \"" valor[p] "\" de " etiquetaSemana
-      }
-      avisarSobrantes(baseT, PERMITIDAS_TURNO, conDe(etiqueta),
-                      "Cada turno solo puede tener \"turno\", \"grandes\" y \"peques\".")
-      revisarGrupo(baseT ".grandes", conDe(etiqueta), "grandes")
-      revisarGrupo(baseT ".peques", conDe(etiqueta), "peques")
-    } else {
-      fallar("El turno " (j + 1) " de " etiquetaSemana " no tiene la forma correcta.",
-             "Cada turno es un bloque entre llaves con sus datos adentro.")
+    if (clase[p] != "v:string") {
+      fallar("El turno \"" clave "\" de " etiquetaSemana " no está escrito como texto.",
+             "Tiene que ser un nombre entre comillas: \"" clave "\": \"Mariela\". Si no hay persona asignada, dejalo como \"\".")
+      continue
     }
+    if (valor[p] !~ /^[[:space:]]*$/) llenos++
   }
   if (n == 0) {
-    avisar(mayus(etiquetaSemana) " tiene la lista de turnos vacía.",
-           "Si ese finde no tiene turnos, está bien dejarlo así: la página lo muestra como \"Turnos en construcción\". Si le faltan turnos, agregá al menos el de Mañana.")
+    avisar(mayus(etiquetaSemana) " no tiene turnos cargados.",
+           "Si ese finde no tiene turnos, está bien: la página lo muestra como \"Turnos en construcción\". Si ya los tenés, agregá \"sabadoTarde\", \"domingoManana\" y \"domingoTarde\".")
+  } else if (llenos == 0) {
+    avisar(mayus(etiquetaSemana) " no tiene ninguna persona asignada.",
+           "Si ese finde todavía no está confirmado, está bien: la página muestra \"Sin asignar\" en cada turno.")
   }
-}
-
-function revisarGrupo(base, conTexto, etiqueta,   p, pista) {
-  if (!(base in clase)) {
-    avisar("En " conTexto " no está el grupo \"" etiqueta "\", así que no se van a mostrar esos seños.",
-           "Si ese grupo no tiene turno esa semana, está bien que no esté. Si sí tiene, agregá \"" etiqueta "\": { \"seño\": \"...\" }.")
-    return
-  }
-  if (clase[base] != "o") {
-    fallar(mayus(conDe(conTexto)) ": el grupo \"" etiqueta "\" no tiene la forma correcta.",
-           "Tiene que ir entre llaves con los datos adentro, por ejemplo \"" etiqueta "\": { \"seño\": \"Ludmi\" }.")
-    return
-  }
-
-  p = base ".seño"
-  if (!(p in clase)) {
-    fallar("Falta el nombre del seño de \"" etiqueta "\" en " conTexto ".",
-           "Agregá \"seño\" con el nombre adentro de \"" etiqueta "\".")
-  } else if (clase[p] != "v:string") {
-    fallar("El nombre del seño de \"" etiqueta "\" en " conTexto " está mal.",
-           "Tiene que ser un texto: \"seño\": \"Ludmi\".")
-  } else if (valor[p] ~ /^[[:space:]]*$/) {
-    fallar("El nombre del seño de \"" etiqueta "\" en " conTexto " está vacío.",
-           "Completalo con el nombre, o borrá el grupo \"" etiqueta "\" si ese día no hay turno.")
-  }
-
-  p = base ".ayudantes"
-  if (p in clase) {
-    if (clase[p] != "v:string") {
-      fallar("El campo \"ayudantes\" de \"" etiqueta "\" en " conTexto " está mal.",
-             "Tiene que ser un texto con los nombres: \"ayudantes\": \"Solange y Yani\".")
-    } else if (valor[p] ~ /^[[:space:]]*$/) {
-      fallar("El campo \"ayudantes\" de \"" etiqueta "\" en " conTexto " está vacío.",
-             "Completalo con los nombres, o borralo del archivo. Si queda vacío, la página muestra un espacio en blanco.")
-    }
-  }
-
-  pista = "Dentro de \"" etiqueta "\" solo se usan \"seño\" y \"ayudantes\"."
-  avisarSobrantes(base, PERMITIDAS_GRUPO, "\"" etiqueta "\" de " conTexto, pista)
+  avisarSobrantes(base, PERMITIDAS_TURNO, etiquetaSemana,
+                  "Dentro de \"turnos\" solo se usan \"sabadoTarde\", \"domingoManana\" y \"domingoTarde\".")
 }
 AWK_SCHEMA
 
@@ -696,7 +648,7 @@ END {
       unicos++
       sabado = diaAnterior(clave)
       reportar("Falta el finde del " fechaLegible(sabado) " (la semana del domingo " clave ").",
-               "Cargá esa semana en data.json. Si ese finde no tiene turnos, dejala con \"turnos\": [].")
+               "Cargá esa semana en data.json. Si ese finde no tiene turnos, dejala con \"turnos\": {}.")
     }
     printf "COB_RESUMEN\t%s\t%d\t%d\n", mesLegible(mtxt), faltan, total
   }

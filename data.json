@@ -2,67 +2,39 @@
   "semanas": [
     {
       "fecha": "2026-10-04",
-      "turnos": [
-        {
-          "turno": "Mañana",
-          "grandes": { "seño": "Anto", "ayudantes": "Raquel" },
-          "peques": { "seño": "Juli", "ayudantes": "More" }
-        },
-        {
-          "turno": "Tarde",
-          "grandes": { "seño": "Andre", "ayudantes": "Lauri" },
-          "peques": { "seño": "Mariela", "ayudantes": "Ana y Marian" }
-        }
-      ]
+      "turnos": {
+        "sabadoTarde": "",
+        "domingoManana": "Anto",
+        "domingoTarde": "Andre"
+      }
     },
     {
       "fecha": "2026-10-11",
-      "turnos": [
-        {
-          "turno": "Mañana",
-          "grandes": { "seño": "Anita", "ayudantes": "Solange" },
-          "peques": { "seño": "Ludmi", "ayudantes": "Lizi" }
-        },
-        {
-          "turno": "Tarde",
-          "grandes": { "seño": "Claudia", "ayudantes": "Bibi" },
-          "peques": { "seño": "Vicky", "ayudantes": "Luci" }
-        }
-      ]
+      "turnos": {
+        "sabadoTarde": "",
+        "domingoManana": "Anita",
+        "domingoTarde": "Claudia"
+      }
     },
     {
       "fecha": "2026-10-18",
-      "turnos": [
-        {
-          "turno": "Mañana",
-          "grandes": { "seño": "Anto", "ayudantes": "Raquel" },
-          "peques": { "seño": "Mary", "ayudantes": "Alexis y Luci" }
-        },
-        {
-          "turno": "Tarde",
-          "grandes": { "seño": "Andre", "ayudantes": "Lauri" },
-          "peques": { "seño": "Flor", "ayudantes": "Santi y More" }
-        }
-      ]
+      "turnos": {
+        "sabadoTarde": "",
+        "domingoManana": "Anto",
+        "domingoTarde": "Andre"
+      }
     },
     {
       "fecha": "2026-10-25",
-      "turnos": [
-        {
-          "turno": "Mañana",
-          "grandes": { "seño": "Mariela", "ayudantes": "Raquel" },
-          "peques": { "seño": "Juli", "ayudantes": "More" }
-        },
-        {
-          "turno": "Tarde",
-          "grandes": { "seño": "Claudia", "ayudantes": "Bibi" },
-          "peques": { "seño": "Andre", "ayudantes": "Zele" }
-        }
-      ]
+      "turnos": {
+        "sabadoTarde": "",
+        "domingoManana": "Mariela",
+        "domingoTarde": "Claudia"
+      }
     },
     {
       "fecha": "2026-11-01",
-      "turnos": []
+      "turnos": {}
     }
   ]
 }
