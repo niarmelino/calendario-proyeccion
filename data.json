@@ -1,40 +1,44 @@
 {
   "semanas": [
     {
-      "fecha": "2026-10-04",
-      "turnos": {
-        "sabadoTarde": "",
-        "domingoManana": "Anto",
-        "domingoTarde": "Andre"
-      }
-    },
-    {
-      "fecha": "2026-10-11",
-      "turnos": {
-        "sabadoTarde": "",
-        "domingoManana": "Anita",
-        "domingoTarde": "Claudia"
-      }
-    },
-    {
-      "fecha": "2026-10-18",
-      "turnos": {
-        "sabadoTarde": "",
-        "domingoManana": "Anto",
-        "domingoTarde": "Andre"
-      }
-    },
-    {
-      "fecha": "2026-10-25",
-      "turnos": {
-        "sabadoTarde": "",
-        "domingoManana": "Mariela",
-        "domingoTarde": "Claudia"
-      }
-    },
-    {
       "fecha": "2026-11-01",
-      "turnos": {}
+      "turnos": {
+        "sabadoTarde": "Marco y Giane",
+        "domingoManana": "Ludmi",
+        "domingoTarde": "Marco y Vicky"
+      }
+    },
+    {
+      "fecha": "2026-11-08",
+      "turnos": {
+        "sabadoTarde": "David y Tizi",
+        "domingoManana": "Ani",
+        "domingoTarde": "David y Tobi"
+      }
+    },
+    {
+      "fecha": "2026-11-15",
+      "turnos": {
+        "sabadoTarde": "Nico y Giane",
+        "domingoManana": "Ani",
+        "domingoTarde": "Nico y Vicky"
+      }
+    },
+    {
+      "fecha": "2026-11-22",
+      "turnos": {
+        "sabadoTarde": "David yTizi",
+        "domingoManana": "Nico",
+        "domingoTarde": "David y Tobi"
+      }
+    },
+    {
+      "fecha": "2026-11-29",
+      "turnos": {
+        "sabadoTarde": "Marco y Giane",
+        "domingoManana": "Ani",
+        "domingoTarde": "Marco y Vicky"
+      }
     }
   ]
 }
