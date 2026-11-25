@@ -1,43 +1,43 @@
 {
   "semanas": [
     {
-      "fecha": "2026-11-01",
-      "turnos": {
-        "sabadoTarde": "Marco y Giane",
-        "domingoManana": "Ludmi",
-        "domingoTarde": "David y Vicky"
-      }
-    },
-    {
-      "fecha": "2026-11-08",
-      "turnos": {
-        "sabadoTarde": "David y Tizi",
-        "domingoManana": "Ani",
-        "domingoTarde": "David y Tobi"
-      }
-    },
-    {
-      "fecha": "2026-11-15",
-      "turnos": {
-        "sabadoTarde": "Nico y Giane",
-        "domingoManana": "Ani",
-        "domingoTarde": "Nico y Vicky"
-      }
-    },
-    {
-      "fecha": "2026-11-22",
-      "turnos": {
-        "sabadoTarde": "David y Tizi",
-        "domingoManana": "Ani",
-        "domingoTarde": "David y Tobi"
-      }
-    },
-    {
       "fecha": "2026-11-29",
       "turnos": {
         "sabadoTarde": "Marco y Giane",
         "domingoManana": "Nico",
         "domingoTarde": "Marco y Vicky"
+      }
+    },
+    {
+      "fecha": "2026-12-06",
+      "turnos": {
+        "sabadoTarde": "Marco y Tizi",
+        "domingoManana": "?",
+        "domingoTarde": "Marco y Tobi"
+      }
+    },
+    {
+      "fecha": "2026-12-13",
+      "turnos": {
+        "sabadoTarde": "David y Giane",
+        "domingoManana": "Nico",
+        "domingoTarde": "David y Vicky"
+      }
+    },
+    {
+      "fecha": "2026-12-20",
+      "turnos": {
+        "sabadoTarde": "Marco y Tizi",
+        "domingoManana": "Ani",
+        "domingoTarde": "Marco y Tobi"
+      }
+    },
+    {
+      "fecha": "2026-12-27",
+      "turnos": {
+        "sabadoTarde": "David y Giane",
+        "domingoManana": "Nico",
+        "domingoTarde": "David y Vicky"
       }
     }
   ]
